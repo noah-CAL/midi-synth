@@ -1,7 +1,13 @@
 CC = gcc
 CFLAGS = -Wall -I./include/
-SRC = src/main.c src/midi.c # synth.c
+LDFLAGS = -lcheck -lm -lsubunit
+
+TEST_SRC = $(wildcard tests/*.c) src/midi.c # synth.c
+TEST_OBJ = $(TEST_SRC:.c=.o)
+
+SRC = src/main.c $(TEST_SRC)
 OBJFILES = $(SRC:.c=.o)
+
 DEPS = $(SRC:.c=.h)
 EXEC = bin/main
 
@@ -9,7 +15,12 @@ EXEC = bin/main
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 $(EXEC): $(OBJFILES)
-	$(CC) -o $(EXEC) $(OBJFILES) $(CFLAGS)
+	$(CC) -o $(EXEC) $(OBJFILES) $(CFLAGS) $(LDFLAGS)
+
+.PHONY: check
+check: $(TEST_OBJ)
+	$(CC) -o check -ggdb $(TEST_OBJ) $(CFLAGS) $(LDFLAGS)
+	./check
 
 .PHONY: clean
 clean:
