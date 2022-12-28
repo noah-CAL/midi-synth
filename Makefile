@@ -3,7 +3,7 @@ CFLAGS = -Wall -I./include/
 SRC = src/main.c src/midi.c # synth.c
 OBJFILES = $(SRC:.c=.o)
 DEPS = $(SRC:.c=.h)
-EXEC = main
+EXEC = bin/main
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
