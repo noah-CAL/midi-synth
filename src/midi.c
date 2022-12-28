@@ -2,22 +2,16 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "midi.h"
 
 /** This C file contains methods to interface with reading MIDI packets. 
 * MIDI protocol information can be found in the /SPECS directory.
 */
 
-typedef uint32_t UMP_word;
-
-typedef struct {
-    uint8_t num_words;
-    UMP_word *words;
-} UMP;
-
 /** Returns a pointer to a Universal Midi Packet UMP with a 
 * number of NUM_WORDS 32-bit words. 
 */
-UMP *init_UMP(uint32_t *byte_stream, uint8_t num_words) {
+UMP *init_UMP(uint32_t **byte_stream, uint8_t num_words) {
     if (num_words > 4) {
         fprintf(stderr, "128-bit+ packets have yet to be implemented. ");
         exit(EXIT_FAILURE);
@@ -31,6 +25,7 @@ UMP *init_UMP(uint32_t *byte_stream, uint8_t num_words) {
     return p;
 }
 
+/** Deallocates memory for a UMP. */
 void free_UMP(UMP *p) {
     // TODO: update this as time goes on
     free (p->words);
