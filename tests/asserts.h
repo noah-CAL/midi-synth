@@ -20,23 +20,35 @@ typedef struct {
 } TestCase;
 
 typedef struct {
-    uint32_t num_tests;
+    uint8_t num_tests;
     TestCase *tests;
 } TestSuite;
 
 typedef struct {
-    uint32_t num_suites;
+    uint8_t num_suites;
     TestSuite *suites;
 } TestRunner;
 
 /** Returns a TestCase object to add to a test suite. */
-TestCase create_test_case(char *name, void (*test_fn)());
+TestCase *create_test_case(char *name, void (*test_fn)());
+
+/** Returns a TestSuite object. */
+TestSuite *create_test_suite();
+
+/** Returns a TestRunner object. */
+TestRunner *create_test_runner();
 
 /** Adds test case to TestSuite S. */
 void add_test_case(TestSuite *s, TestCase *t);
 
+/** Adds a test suite to TestRunner R. */
+void add_test_suite(TestRunner *r, TestSuite *s);
+
 /** Runs all test suites in TestRunner R. */
 void run_tests(TestRunner *r);
+
+/** Deallocates the memory space for all tests and suites in TestRunner R. */
+void dealloc_tests(TestRunner *r);
 
 #define PRINT_ERROR_MSG(msg) fprintf(stderr, "%s:%d: " msg "\n", __FILE__, __LINE__);
 
