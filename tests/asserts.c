@@ -30,7 +30,7 @@ TestRunner *create_test_runner() {
 /** Adds test case to TestSuite S. */
 void add_test_case(TestSuite *s, TestCase *t) {
     uint8_t curr_tests = s->num_tests;
-    reallocarray(s->tests, curr_tests + 1, sizeof(TestCase));
+    reallocarray(s->tests, curr_tests + 1, sizeof(TestCase *));
     if (s->tests == NULL) {
         fprintf(stderr, "Memory array reallocation failed %s:%d", __FILE__, __LINE__);
     }
@@ -39,13 +39,37 @@ void add_test_case(TestSuite *s, TestCase *t) {
 }
 
 /** Adds a test suite to TestRunner R. */
-void add_test_suite(TestRunner *r, TestSuite *s);
+void add_test_suite(TestRunner *r, TestSuite *s) {
+    uint8_t curr_suites = r->num_suites;
+    reallocarray(r->suites, curr_suites + 1, sizeof(TestSuite *));
+    if (r->suites == NULL) {
+        fprintf(stderr, "Memory array reallocation failed %s:%d", __FILE__, __LINE__);
+    }
+    r->suites[curr_suites] = s;
+    r->num_suites += 1;
+}
 
 /** Runs all test suites in TestRunner R. */
-void run_tests(TestRunner *r);
+void run_tests(TestRunner *r) {
+    for (int i = 0; i < r->num_suites; i += 1) {
+        TestSuite *s = r->suites[i];
+        for (int j = 0; j < s->num_tests; j += 1) {
+            TestCase *t = s->tests[j];
+            t->test_fn();
+        }
+    }
+}
 
 /** Deallocates the memory space for all tests and suites in TestRunner R. */
-void dealloc_tests(TestRunner *r);
+void dealloc_tests(TestRunner *r) {
+    for (int i = 0; i < r->num_suites; i += 1) {
+        TestSuite *s = r->suites[i];
+        free(s->tests);
+        free(s);
+    }
+    free(r->suites);
+    free(r);
+}
 
 /** Runs sample ad_hoc tests for makeshift assertion statements in asserts.h . */
 static void ad_hoc_test() {

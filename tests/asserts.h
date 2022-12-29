@@ -44,6 +44,8 @@ void add_test_case(TestSuite *s, TestCase *t);
 /** Adds a test suite to TestRunner R. */
 void add_test_suite(TestRunner *r, TestSuite *s);
 
+// TODO: remove test_case / test_suite? CRUD operations?
+
 /** Runs all test suites in TestRunner R. */
 void run_tests(TestRunner *r);
 
