@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -Wall -std=c99 -I.
 LDFLAGS = 
 SYNTH_DEPS = #src/main.o src/midi.o
-UNIT_TEST_DEPS = tests/unit_tests.o tests/asserts.o  tests/asserts.h # src/midi.o 
+UNIT_TEST_DEPS = tests/unit_tests.o tests/asserts.o  tests/asserts.h include/midi.h src/midi.o 
 # UNIT_TEST_DEPS += tests/unit_tests.h
 # INT_TEST_DEPS = main.o integration_tests.o asserts.o
 
@@ -25,14 +25,14 @@ unit-tests: $(UNIT_TEST_DEPS)
 	$(CC) -o unit-test $^ $(CFLAGS) $(LDFLAGS)
 
 .PHONY: run-unit-tests
-run-unit-tests: unit-tests $(UNIT_TEST_DEPS)
+run-unit-tests: unit-test $(UNIT_TEST_DEPS)
 	./unit-test
 
-%.o: %.c tests/asserts.h
+%.o: %.c tests/asserts.h (wildcard include/*.h)
 	$(CC) -o $@ -c $< $(CFLAGS) $(LDFLAGS)
 
-%.h: %.c
-	unit-tests
+#%.h: %.c
+	#unit-tests
 	
 .PHONY: debug-unit-tests
 debug-unit-tests: unit-tests
