@@ -1,27 +1,35 @@
+# Makefile format modeled after CS 61C Project 1 - Snek Makefile
 CC = gcc
-CFLAGS = -Wall -I./include/
-LDFLAGS = -lcheck -lm -lsubunit
+CFLAGS = -Wall -std=c99
+LDFLAGS = 
+SYNTH_DEPS = src/main.o src/midi.o
+UNIT_TEST_DEPS = src/midi.o tests/unit_tests.o asserts.o
+# INT_TEST_DEPS = main.o integration_tests.o asserts.o
 
-TEST_SRC = $(wildcard tests/*.c) src/midi.c # synth.c
-TEST_OBJ = $(TEST_SRC:.c=.o)
+help:
+	@echo Usage:
+	@echo make synth: Compiles the SYNTH executable to process input.
+	@echo make unit-tests: Compiles the unit tests.
+	@echo make run-unit-tests: Compiles and runs unit tests.
+	@echo make debug-unit-tests: Compiles unit tests and starts the debugger.
+	@echo make clean: Removes executables and input files. (IMPLEMENT)
+# @echo make integration-tests: Compiles the integration tests.
+# @echo make run-integration-tests: Compiles and runs integration tests.
+# @echo make debug-integration-tests: Compiles integration tests and starts the debugger.
 
-SRC = src/main.c $(TEST_SRC)
-OBJFILES = $(SRC:.c=.o)
+synth: $(SYNTH_DEPS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
-DEPS = $(SRC:.c=.h)
-EXEC = bin/main
+unit-tests: $(UNIT_TEST_DEPS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+.PHONY: run-unit-tests
+run-unit-tests: unit-tests
+	./unit-tests
 
-$(EXEC): $(OBJFILES)
-	$(CC) -o $(EXEC) $(OBJFILES) $(CFLAGS) $(LDFLAGS)
+%.o: %.c
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
-.PHONY: check
-check: $(TEST_OBJ)
-	$(CC) -o check -ggdb $(TEST_OBJ) $(CFLAGS) $(LDFLAGS)
-	./check
-
-.PHONY: clean
-clean:
-	rm -rf $(OBJFILES) $(wildcard *.o)
+.PHONY: debug-unit-tests
+debug-unit-tests: unit-tests
+	cgdb ./unit-tests
