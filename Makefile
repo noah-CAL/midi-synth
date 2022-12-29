@@ -2,8 +2,8 @@
 CC = gcc
 CFLAGS = -Wall -std=c99 -I.
 LDFLAGS = 
-SYNTH_DEPS = src/main.o src/midi.o
-UNIT_TEST_DEPS = src/midi.o tests/unit_tests.o tests/asserts.o  tests/asserts.h
+SYNTH_DEPS = #src/main.o src/midi.o
+UNIT_TEST_DEPS = tests/unit_tests.o tests/asserts.o  tests/asserts.h # src/midi.o 
 # UNIT_TEST_DEPS += tests/unit_tests.h
 # INT_TEST_DEPS = main.o integration_tests.o asserts.o
 
@@ -22,18 +22,17 @@ synth: $(SYNTH_DEPS)
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 unit-tests: $(UNIT_TEST_DEPS)
-	@echo hi
 	$(CC) -o unit-test $^ $(CFLAGS) $(LDFLAGS)
 
 .PHONY: run-unit-tests
 run-unit-tests: unit-tests $(UNIT_TEST_DEPS)
 	./unit-test
-	@echo
 
 %.o: %.c tests/asserts.h
-	$(CC) -c $@ $^ $(CFLAGS) $(LDFLAGS)
+	$(CC) -o $@ -c $< $(CFLAGS) $(LDFLAGS)
 
 %.h: %.c
+	unit-tests
 	
 .PHONY: debug-unit-tests
 debug-unit-tests: unit-tests
