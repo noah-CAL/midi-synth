@@ -11,7 +11,7 @@
 /** Returns a pointer to a Universal Midi Packet UMP with a 
 * number of NUM_WORDS 32-bit words. 
 */
-UMP *init_UMP(uint32_t **byte_stream, uint8_t num_words) {
+UMP *init_UMP(uint32_t *byte_stream, uint8_t num_words) {
     if (num_words > 4) {
         fprintf(stderr, "128-bit+ packets have yet to be implemented. ");
         exit(EXIT_FAILURE);

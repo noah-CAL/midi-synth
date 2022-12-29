@@ -4,16 +4,25 @@
 #include "asserts.h"
 #include "include/midi.h"
 
-void midi_basic() {
-    ASSERT_EQ(2, 3);
-}
-
-void midi_advanced() {
-    ASSERT_NULL(0x01);
-}
-
-void IO_basic() {
-    ASSERT_NEQ("4", "4");
+void midi_init() {
+    uint8_t num_words = 2;
+    UMP_word bytestream[2][WORD_SIZE_BITS] = {
+        {
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+        },
+        {
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+        },
+    };
+    UMP *packet = init_UMP(bytestream, num_words);
+    ASSERT_EQ(packet->num_words, 2);
+    ASSERT_MEM_EQ(packet->words, bytestream[0]);
 }
 
 int main() {
@@ -21,12 +30,7 @@ int main() {
 
     TestSuite *midi_tests = create_test_suite();
     add_test_suite(r, midi_tests);
-    add_test_case(midi_tests, create_test_case("Midi Basic", &midi_basic));
-    add_test_case(midi_tests, create_test_case("Midi Adv.", &midi_advanced));
-
-    TestSuite *IO_tests = create_test_suite();
-    add_test_suite(r, IO_tests);
-    add_test_case(IO_tests, create_test_case("IO Basic", &IO_basic));
+    add_test_case(midi_tests, create_test_case("Midi Init", &midi_init));
 
     run_tests(r);
     dealloc_tests(r);
