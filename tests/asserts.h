@@ -1,9 +1,42 @@
-/** Custom assertion module to provide unit-testing without any additional dependencies. */
+/** Custom assertion module to provide unit-testing without any additional dependencies. 
+ASSERTION MACROS:
+ASSERT_TRUE(value)
+ASSERT_FALSE(value)
+ASSERT_EQ(a, b)
+ASSERT_NEQ(a, b)
+ASSERT_NULL(a)
+ASSERT_NOT_NULL(a)
+*/
 #ifndef ASSERTS_H
 #define ASSERTS_H
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
+
+typedef struct {
+    char *name;
+    void (*test_fn)();
+} TestCase;
+
+typedef struct {
+    uint32_t num_tests;
+    TestCase *tests;
+} TestSuite;
+
+typedef struct {
+    uint32_t num_suites;
+    TestSuite *suites;
+} TestRunner;
+
+/** Returns a TestCase object to add to a test suite. */
+TestCase create_test_case(char *name, void (*test_fn)());
+
+/** Adds test case to TestSuite S. */
+void add_test_case(TestSuite *s, TestCase *t);
+
+/** Runs all test suites in TestRunner R. */
+void run_tests(TestRunner *r);
 
 #define PRINT_ERROR_MSG(msg) fprintf(stderr, "%s:%d: " msg "\n", __FILE__, __LINE__);
 

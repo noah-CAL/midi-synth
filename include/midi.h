@@ -3,14 +3,14 @@
 
 #include <stdint.h>
 
-typedef uint32_t UMP_word;
+#define UMP_word uint32_t
 
 typedef struct {
     uint8_t num_words;
     UMP_word **words;
 } UMP;
 
-UMP *init_UMP(uint32_t **byte_stream, uint8_t num_words);
+UMP *init_UMP(UMP_word **byte_stream, uint8_t num_words);
 void free_UMP(UMP *p);
 
 #endif

@@ -25,14 +25,17 @@ unit-tests: $(UNIT_TEST_DEPS)
 	$(CC) -o unit-test $^ $(CFLAGS) $(LDFLAGS)
 
 .PHONY: run-unit-tests
-run-unit-tests: unit-test $(UNIT_TEST_DEPS)
+run-unit-tests: unit-tests
 	./unit-test
+
+tests/asserts.h:
+	@echo here
 
 %.o: %.c tests/asserts.h (wildcard include/*.h)
 	$(CC) -o $@ -c $< $(CFLAGS) $(LDFLAGS)
 
-#%.h: %.c
-	#unit-tests
+%.h: %.c
+	make unit-tests
 	
 .PHONY: debug-unit-tests
 debug-unit-tests: unit-tests
