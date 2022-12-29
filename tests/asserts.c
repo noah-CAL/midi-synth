@@ -6,6 +6,9 @@
 TestCase *create_test_case(char *name, void (*test_fn)()) {
     // TODO: create free() methods to prevent memory leaks
     TestCase *t = malloc(sizeof(TestCase));
+    if (t == NULL) {
+        PRINT_ERROR_MSG("TestCase memory allocation failed");
+    }
     t->name = name;
     t->test_fn = test_fn;
     return t;
@@ -14,16 +17,28 @@ TestCase *create_test_case(char *name, void (*test_fn)()) {
 /** Returns a TestSuite object. */
 TestSuite *create_test_suite() {
     TestSuite *s = malloc(sizeof(TestSuite));
+    if (s == NULL) {
+        PRINT_ERROR_MSG("TestSuite memory allocation failed");
+    }
     s->num_tests = 0;
-    s->tests = calloc(0, sizeof(TestCase *));
+    s->tests = calloc(0, sizeof(TestCase *));  // will this allocate blank memory space? will this automatically be point to 0x00?
+    if (s->tests == NULL) {
+        PRINT_ERROR_MSG("TestSuite Tests** memory allocation failed");
+    }
     return s;
 }
 
 /** Returns a TestRunner object. */
 TestRunner *create_test_runner() {
     TestRunner *r = malloc(sizeof(TestRunner));
+    if (r == NULL) {
+        PRINT_ERROR_MSG("TestRunner memory allocation failed");
+    }
     r->num_suites = 0;
     r->suites = calloc(0, sizeof(TestSuite *));
+    if (r->suites) {
+        PRINT_ERROR_MSG("TestRunner Suites** memory allocation failed");
+    }
     return r;
 }
 
@@ -32,7 +47,7 @@ void add_test_case(TestSuite *s, TestCase *t) {
     uint8_t curr_tests = s->num_tests;
     reallocarray(s->tests, curr_tests + 1, sizeof(TestCase *));
     if (s->tests == NULL) {
-        fprintf(stderr, "Memory array reallocation failed %s:%d", __FILE__, __LINE__);
+        PRINT_ERROR_MSG("Memory array reallocation failed");
     }
     s->tests[curr_tests] = t;
     s->num_tests += 1;
@@ -43,7 +58,7 @@ void add_test_suite(TestRunner *r, TestSuite *s) {
     uint8_t curr_suites = r->num_suites;
     reallocarray(r->suites, curr_suites + 1, sizeof(TestSuite *));
     if (r->suites == NULL) {
-        fprintf(stderr, "Memory array reallocation failed %s:%d", __FILE__, __LINE__);
+        PRINT_ERROR_MSG("Memory array reallocation failed");
     }
     r->suites[curr_suites] = s;
     r->num_suites += 1;
