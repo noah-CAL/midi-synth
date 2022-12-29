@@ -3,7 +3,9 @@ CC = gcc
 CFLAGS = -Wall -std=c99
 LDFLAGS = 
 SYNTH_DEPS = src/main.o src/midi.o
-UNIT_TEST_DEPS = src/midi.o tests/unit_tests.o asserts.o
+UNIT_TEST_DEPS = src/midi.o tests/unit_tests.o tests/asserts.o 
+UNIT_TEST_DEPS += include/midi.h  tests/asserts.h
+# UNIT_TEST_DEPS += tests/unit_tests.h
 # INT_TEST_DEPS = main.o integration_tests.o asserts.o
 
 help:
@@ -12,7 +14,7 @@ help:
 	@echo make unit-tests: Compiles the unit tests.
 	@echo make run-unit-tests: Compiles and runs unit tests.
 	@echo make debug-unit-tests: Compiles unit tests and starts the debugger.
-	@echo make clean: Removes executables and input files. (IMPLEMENT)
+	@echo make clean: Removes executables and input files. IMPLEMENT
 # @echo make integration-tests: Compiles the integration tests.
 # @echo make run-integration-tests: Compiles and runs integration tests.
 # @echo make debug-integration-tests: Compiles integration tests and starts the debugger.
@@ -21,15 +23,22 @@ synth: $(SYNTH_DEPS)
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 unit-tests: $(UNIT_TEST_DEPS)
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+	$(CC) -o unit-test $^ $(CFLAGS) $(LDFLAGS)
 
 .PHONY: run-unit-tests
 run-unit-tests: unit-tests
-	./unit-tests
+	./unit-test
+	@echo
 
 %.o: %.c
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+	$(CC) -c -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
+%.h: %.c
+	
 .PHONY: debug-unit-tests
 debug-unit-tests: unit-tests
-	cgdb ./unit-tests
+	cgdb ./unit-test
+
+.PHONY: clean
+clean:
+	rm -r $(wildcard tests/*.o)

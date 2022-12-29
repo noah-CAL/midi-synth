@@ -1,6 +1,8 @@
 #ifndef MIDI_H
 #define MIDI_H
 
+#include <stdint.h>
+
 typedef uint32_t UMP_word;
 
 typedef struct {
