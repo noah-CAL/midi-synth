@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "midi.h"
+#include "include/midi.h"
 
 /** This C file contains methods to interface with reading MIDI packets. 
 * MIDI protocol information can be found in the /SPECS directory.
