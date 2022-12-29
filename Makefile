@@ -1,6 +1,6 @@
 # Makefile format modeled after CS 61C Project 1 - Snek Makefile
 CC = gcc
-CFLAGS = -Wall -std=c99 -I.
+CFLAGS = -Wall -std=c99 -I. -g
 LDFLAGS = 
 SYNTH_DEPS = #src/main.o src/midi.o
 UNIT_TEST_DEPS = tests/unit_tests.o tests/asserts.o  tests/asserts.h include/midi.h src/midi.o 

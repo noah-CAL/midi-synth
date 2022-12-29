@@ -21,10 +21,7 @@ TestSuite *create_test_suite() {
         PRINT_ERROR_MSG("TestSuite memory allocation failed");
     }
     s->num_tests = 0;
-    s->tests = calloc(0, sizeof(TestCase *));  // will this allocate blank memory space? will this automatically be point to 0x00?
-    if (s->tests == NULL) {
-        PRINT_ERROR_MSG("TestSuite Tests** memory allocation failed");
-    }
+    s->tests = NULL;
     return s;
 }
 
@@ -35,30 +32,26 @@ TestRunner *create_test_runner() {
         PRINT_ERROR_MSG("TestRunner memory allocation failed");
     }
     r->num_suites = 0;
-    r->suites = calloc(0, sizeof(TestSuite *));
-    if (r->suites) {
-        PRINT_ERROR_MSG("TestRunner Suites** memory allocation failed");
-    }
     return r;
 }
 
 /** Adds test case to TestSuite S. */
 void add_test_case(TestSuite *s, TestCase *t) {
     uint8_t curr_tests = s->num_tests;
-    reallocarray(s->tests, curr_tests + 1, sizeof(TestCase *));
+    s->tests = realloc(s->tests, (curr_tests + 1) * sizeof(TestCase *));
     if (s->tests == NULL) {
-        PRINT_ERROR_MSG("Memory array reallocation failed");
+        PRINT_ERROR_MSG("Memory allocation failed");
     }
-    s->tests[curr_tests] = t;
+    *(s->tests + curr_tests) = t;
     s->num_tests += 1;
 }
 
 /** Adds a test suite to TestRunner R. */
 void add_test_suite(TestRunner *r, TestSuite *s) {
     uint8_t curr_suites = r->num_suites;
-    reallocarray(r->suites, curr_suites + 1, sizeof(TestSuite *));
-    if (r->suites == NULL) {
-        PRINT_ERROR_MSG("Memory array reallocation failed");
+    r->suites = realloc(r->suites, (curr_suites + 1) * sizeof(TestSuite *));
+    if (&(r->suites) == NULL) {
+        PRINT_ERROR_MSG("Memory allocation failed");
     }
     r->suites[curr_suites] = s;
     r->num_suites += 1;
@@ -86,8 +79,8 @@ void dealloc_tests(TestRunner *r) {
     free(r);
 }
 
-/** Runs sample ad_hoc tests for makeshift assertion statements in asserts.h . */
-static void ad_hoc_test() {
+/** Runs sample ad_hoc tests for makeshift assertion statements in asserts.h .
+void ad_hoc_test() {
     ASSERT_TRUE(1);
     ASSERT_TRUE(0);  // fail
 
@@ -112,3 +105,35 @@ static void ad_hoc_test() {
     ASSERT_NOT_NULL(0x00);  // fail
     free(p);
 }
+*/
+
+/* Example implementation of the test runner.
+static void midi_basic() {
+    ASSERT_EQ(2, 3);
+}
+
+static void midi_advanced() {
+    ASSERT_NULL(0x01);
+}
+
+static void IO_basic() {
+    ASSERT_NEQ("4", "4");
+}
+
+int main_fn() {
+    TestRunner *r = create_test_runner();
+
+    TestSuite *midi_tests = create_test_suite();
+    add_test_suite(r, midi_tests);
+    add_test_case(midi_tests, create_test_case("Midi Basic", &midi_basic));
+    add_test_case(midi_tests, create_test_case("Midi Adv.", &midi_advanced));
+
+    TestSuite *IO_tests = create_test_suite();
+    add_test_suite(r, IO_tests);
+    add_test_case(IO_tests, create_test_case("IO Basic", &IO_basic));
+
+    run_tests(r);
+    dealloc_tests(r);
+    return 0;
+}
+*/
