@@ -21,12 +21,12 @@ typedef struct {
 
 typedef struct {
     uint8_t num_tests;
-    TestCase *tests;
+    TestCase **tests;
 } TestSuite;
 
 typedef struct {
     uint8_t num_suites;
-    TestSuite *suites;
+    TestSuite **suites;
 } TestRunner;
 
 /** Returns a TestCase object to add to a test suite. */

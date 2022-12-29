@@ -15,7 +15,7 @@ TestCase *create_test_case(char *name, void (*test_fn)()) {
 TestSuite *create_test_suite() {
     TestSuite *s = malloc(sizeof(TestSuite));
     s->num_tests = 0;
-    s->tests = calloc(0, sizeof(TestCase));
+    s->tests = calloc(0, sizeof(TestCase *));
     return s;
 }
 
@@ -23,12 +23,20 @@ TestSuite *create_test_suite() {
 TestRunner *create_test_runner() {
     TestRunner *r = malloc(sizeof(TestRunner));
     r->num_suites = 0;
-    r->suites = calloc(0, sizeof(TestSuite));
+    r->suites = calloc(0, sizeof(TestSuite *));
     return r;
 }
 
 /** Adds test case to TestSuite S. */
-void add_test_case(TestSuite *s, TestCase *t);
+void add_test_case(TestSuite *s, TestCase *t) {
+    uint8_t curr_tests = s->num_tests;
+    reallocarray(s->tests, curr_tests + 1, sizeof(TestCase));
+    if (s->tests == NULL) {
+        fprintf(stderr, "Memory array reallocation failed %s:%d", __FILE__, __LINE__);
+    }
+    s->tests[curr_tests] = t;
+    s->num_tests += 1;
+}
 
 /** Adds a test suite to TestRunner R. */
 void add_test_suite(TestRunner *r, TestSuite *s);
