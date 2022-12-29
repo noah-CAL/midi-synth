@@ -1,10 +1,9 @@
 # Makefile format modeled after CS 61C Project 1 - Snek Makefile
 CC = gcc
-CFLAGS = -Wall -std=c99
+CFLAGS = -Wall -std=c99 -I.
 LDFLAGS = 
 SYNTH_DEPS = src/main.o src/midi.o
-UNIT_TEST_DEPS = src/midi.o tests/unit_tests.o tests/asserts.o 
-UNIT_TEST_DEPS += include/midi.h  tests/asserts.h
+UNIT_TEST_DEPS = src/midi.o tests/unit_tests.o tests/asserts.o  tests/asserts.h
 # UNIT_TEST_DEPS += tests/unit_tests.h
 # INT_TEST_DEPS = main.o integration_tests.o asserts.o
 
@@ -23,15 +22,16 @@ synth: $(SYNTH_DEPS)
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 unit-tests: $(UNIT_TEST_DEPS)
+	@echo hi
 	$(CC) -o unit-test $^ $(CFLAGS) $(LDFLAGS)
 
 .PHONY: run-unit-tests
-run-unit-tests: unit-tests
+run-unit-tests: unit-tests $(UNIT_TEST_DEPS)
 	./unit-test
 	@echo
 
-%.o: %.c
-	$(CC) -c -o $@ $^ $(CFLAGS) $(LDFLAGS)
+%.o: %.c tests/asserts.h
+	$(CC) -c $@ $^ $(CFLAGS) $(LDFLAGS)
 
 %.h: %.c
 	
