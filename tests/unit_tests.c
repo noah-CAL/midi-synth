@@ -6,7 +6,7 @@
 
 void midi_init() {
     #define NUM_WORDS 2
-    UMP_word bytestream[NUM_WORDS] = { 0xDEADBEEF, 0xABCD1234 };
+    UMP_word bytestream[NUM_WORDS] = { 0x01ADBEEF, 0xABCD1234 };
     UMP *packet = init_UMP(bytestream, NUM_WORDS);
     ASSERT_EQ(packet->num_words, 2);
     for (int i = 0; i < NUM_WORDS; i += 1) {
@@ -14,6 +14,20 @@ void midi_init() {
     }
     free_UMP(packet);
     #undef NUM_WORDS
+}
+
+void test_get_byte() {
+    uint8_t num_bytes = 8;
+    UMP_word bytestream[] = { 0x01ADBEEF, 0xABCD1234 };
+    UMP *packet = init_UMP(bytestream, 2);
+    uint8_t expected[] = {
+        0x01, 0xAD, 0xBE, 0xEF,
+        0xAB, 0xCD, 0x12, 0x34,
+    };
+    for (int i = 0; i < num_bytes; i += 1) {
+        ASSERT_EQ(expected[i], get_byte(packet, i + 1));
+    }
+    free_UMP(packet);
 }
 
 void message_type() {
@@ -39,9 +53,9 @@ void message_type() {
     for (int i = 0; i < num_types; i += 1) {
         uint8_t code = message_code[i];
         MESSAGE_TYPE type = message_types[i];
-        UMP_word bytestream[] = { code << 28, 0xF6 };
+        UMP_word bytestream[] = { code << 24 | 0xF6 << 16, 0xABCD1234 };
         if (type == SYSTEM_REAL_TIME) {
-            bytestream[1] = 0xF8;
+            bytestream[0] = code << 24 | 0x00F8 << 16;
         }
         UMP *packet = init_UMP(bytestream, 2);
         ASSERT_EQ(packet->msg_type, message_types[i]);
@@ -55,6 +69,7 @@ int main() {
     TestSuite *midi_tests = create_test_suite();
     add_test_suite(r, midi_tests);
     add_test_case(midi_tests, create_test_case("Midi Init", &midi_init));
+    add_test_case(midi_tests, create_test_case("Get Midi Packet Byte", &test_get_byte));
     add_test_case(midi_tests, create_test_case("Midi Message Types", &message_type));
 
     run_tests(r);
