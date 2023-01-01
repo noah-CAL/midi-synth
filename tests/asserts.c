@@ -32,6 +32,7 @@ TestRunner *create_test_runner() {
         PRINT_ERROR_MSG("TestRunner memory allocation failed");
     }
     r->num_suites = 0;
+    r->suites = NULL;
     return r;
 }
 
@@ -50,10 +51,10 @@ void add_test_case(TestSuite *s, TestCase *t) {
 void add_test_suite(TestRunner *r, TestSuite *s) {
     uint8_t curr_suites = r->num_suites;
     r->suites = realloc(r->suites, (curr_suites + 1) * sizeof(TestSuite *));
-    if (&(r->suites) == NULL) {
+    if (r->suites == NULL) {
         PRINT_ERROR_MSG("Memory allocation failed");
     }
-    r->suites[curr_suites] = s;
+    *(r->suites + curr_suites) = s;
     r->num_suites += 1;
 }
 
