@@ -24,6 +24,7 @@ typedef struct {
 } UMP;
 
 UMP *init_UMP(UMP_word *byte_stream, uint8_t num_words);
+uint8_t get_byte(UMP *packet, uint8_t byte);
 void free_UMP(UMP *p);
 
 
