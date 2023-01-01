@@ -24,8 +24,12 @@ unit-tests: $(UNIT_TEST_DEPS)
 	$(CC) -o unit-test $^ $(CFLAGS) $(LDFLAGS)
 
 .PHONY: run-unit-tests
-run-unit-tests: unit-tests
+run-unit-tests: unit-tests $(UNIT_TEST_DEPS)
 	./unit-test
+
+PHONY: valgrind-unit-tests
+valgrind-unit-tests: run-unit-tests
+	valgrind --leak-check=full ./unit-test 
 
 tests/asserts.h:
 	@echo here
@@ -34,6 +38,9 @@ tests/asserts.h:
 	$(CC) -o $@ -c $< $(CFLAGS) $(LDFLAGS)
 
 %.h: %.c
+	make unit-tests
+
+unit_tests.o: asserts.h
 	make unit-tests
 	
 .PHONY: debug-unit-tests

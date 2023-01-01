@@ -72,6 +72,9 @@ void run_tests(TestRunner *r) {
 void dealloc_tests(TestRunner *r) {
     for (int i = 0; i < r->num_suites; i += 1) {
         TestSuite *s = r->suites[i];
+        for (int i = 0; i < s->num_tests; i += 1) {
+            free(s->tests[i]);
+        }
         free(s->tests);
         free(s);
     }

@@ -5,24 +5,15 @@
 #include "include/midi.h"
 
 void midi_init() {
-    uint8_t num_words = 2;
-    UMP_word bytestream[2][WORD_SIZE_BITS] = {
-        {
-            0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,
-        },
-        {
-            0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,
-        },
-    };
-    UMP *packet = init_UMP(bytestream, num_words);
+    #define NUM_WORDS 2
+    UMP_word bytestream[NUM_WORDS] = { 0xDEADBEEF, 0xABCD1234 };
+    UMP *packet = init_UMP(bytestream, NUM_WORDS);
     ASSERT_EQ(packet->num_words, 2);
-    ASSERT_MEM_EQ(packet->words, bytestream[0]);
+    for (int i = 0; i < NUM_WORDS; i += 1) {
+        ASSERT_EQ(packet->words[i], bytestream[i]);
+    }
+    free_UMP(packet);
+    #undef NUM_WORDS
 }
 
 int main() {

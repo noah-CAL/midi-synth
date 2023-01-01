@@ -16,6 +16,7 @@ UMP *init_UMP(uint32_t *byte_stream, uint8_t num_words) {
         fprintf(stderr, "128-bit+ packets have yet to be implemented. ");
         exit(EXIT_FAILURE);
     }
+    // TODO: check for NULL malloc
     UMP *p = (UMP *) malloc(sizeof(UMP));
     p->num_words = num_words;
     p->words = malloc(sizeof(UMP_word) * num_words);
